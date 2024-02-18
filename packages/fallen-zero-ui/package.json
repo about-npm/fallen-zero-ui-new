@@ -1,0 +1,27 @@
+{
+  "name": "@fallen-zero/ui",
+  "version": "1.0.0",
+  "description": "vue3组件库",
+  "main": "lib/index.js",
+  "module": "es/index.mjs",
+  "typings": "lib/src/index.d.ts",
+  "files": [
+    "lib",
+    "es"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fallen-zero",
+    "@fallen-zero",
+    "@fallen-zero/ui",
+    "ui",
+    "vue3组件库"
+  ],
+  "author": "fallen-zero",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ]
+}
