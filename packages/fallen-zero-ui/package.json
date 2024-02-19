@@ -23,5 +23,17 @@
   "license": "MIT",
   "sideEffects": [
     "**/*.css"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/about-npm/fallen-zero-ui-new.git"
+  },
+  "bugs": {
+    "url": "https://github.com/about-npm/fallen-zero-ui-new/issues"
+  },
+  "homepage": "https://github.com/about-npm/fallen-zero-ui-new"
 }
