@@ -1,0 +1,1 @@
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const t=require("../../utils/install.js"),l=require("./index.vue.js"),e=t.withInstall(l.default);exports.Scroll=e;exports.default=e;

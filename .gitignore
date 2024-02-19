@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 packages/**/node_modules
 play/node_modules
+dist
 *.local
 *.zip
 # Editor directories and files

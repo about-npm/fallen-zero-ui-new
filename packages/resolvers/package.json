@@ -1,0 +1,26 @@
+{
+  "name": "@fallen-zero/resolver",
+  "version": "1.0.0",
+  "description": "Fallen Zero UI 组件解析器",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build"
+  },
+  "keywords": [
+    "fallen-zero",
+    "@fallen-zero",
+    "resolver",
+    "组件解析器"
+  ],
+  "author": "fallen-zero",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

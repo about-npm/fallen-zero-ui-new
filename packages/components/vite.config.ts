@@ -2,7 +2,7 @@
  * @Author       : fallen_zero
  * @Date         : 2024-02-18 14:07:43
  * @LastEditors  : fallen_zero
- * @LastEditTime : 2024-02-18 16:46:44
+ * @LastEditTime : 2024-02-19 14:43:39
  * @FilePath     : /fallen-zero-ui/packages/components/vite.config.ts
  * @FileName     :
  */
@@ -25,7 +25,9 @@ export default defineConfig({
           // 打包格式
           format: 'es',
           // 打包后文件名
-          entryFileNames: '[name].mjs',
+          entryFileNames: (chunkInfo) => {
+            return `${chunkInfo.name.replace('packages/components/', '')}.mjs`;
+          },
           // 让打包目录和我们目录对应
           preserveModules: true,
           exports: 'named',
@@ -36,7 +38,9 @@ export default defineConfig({
           // 打包格式
           format: 'cjs',
           // 打包后文件名
-          entryFileNames: '[name].js',
+          entryFileNames: (chunkInfo) => {
+            return `${chunkInfo.name.replace('packages/components/', '')}.js`;
+          },
           // 让打包目录和我们目录对应
           preserveModules: true,
           exports: 'named',
@@ -47,6 +51,7 @@ export default defineConfig({
     },
     lib: {
       entry: './index.ts',
+      name: 'fallen-zero-ui',
     },
   },
   plugins: [
@@ -69,7 +74,12 @@ export default defineConfig({
           this.emitFile({
             type: 'asset',
             fileName: key, // 文件名名不变
-            source: bundler.code.replace(/\.scss/g, '.css'), // 文件内容处理成.css内容
+            source: bundler.code
+              .replace(/\.scss/g, '.css')
+              .replace(
+                /\.\.\/\.\.\/packages\/components\/src\/.*\/style/g,
+                './style'
+              ), // 文件内容处理成.css内容
           });
         }
       },

@@ -1,6 +1,4 @@
-import type { Plugin } from 'vue';
-type SFCWithInstall<T> = T & Plugin;
-export declare const Button: SFCWithInstall<{
+export declare const Button: import("../../utils/install").SFCWithInstall<{
     new (...args: any[]): import("vue").CreateComponentPublicInstance<Readonly<import("vue").ExtractPropTypes<{
         type: {
             type: import("vue").PropType<"primary">;
@@ -32,5 +30,5 @@ export declare const Button: SFCWithInstall<{
     $slots: {
         default?(_: {}): any;
     };
-})>;
+})> & Record<string, any>;
 export default Button;

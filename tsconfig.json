@@ -8,8 +8,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "moduleResolution": "Node",
-    "lib": ["ESNext", "DOM"]
+    "lib": ["ESNext", "DOM"],
+    "types": []
   },
-  "include": ["**/*"],
+  "include": ["**/*", "site/docs/.vitepress/theme"],
   "exclude": []
 }
