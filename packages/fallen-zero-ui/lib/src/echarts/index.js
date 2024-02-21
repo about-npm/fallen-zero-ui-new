@@ -1,1 +1,1 @@
-"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const t=require("../../utils/install.js"),u=require("./index.vue.js"),e=t.withInstall(u.default);exports.Echarts=e;exports.default=e;
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const u=require("./index.vue.js"),r=(e,o)=>{if(e.install=s=>{for(const t of[e,...Object.values(o??{})])s.component(t.name,t)},o)for(const[s,t]of Object.entries(o))e[s]=t;return e},c=r(u.default);exports.Echarts=c;exports.default=c;

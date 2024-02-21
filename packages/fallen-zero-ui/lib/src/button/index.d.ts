@@ -1,4 +1,6 @@
-export declare const Button: import("../../utils/install").SFCWithInstall<{
+import type { Plugin } from 'vue';
+type SFCWithInstall<T> = T & Plugin;
+export declare const Button: SFCWithInstall<{
     new (...args: any[]): import("vue").CreateComponentPublicInstance<Readonly<import("vue").ExtractPropTypes<{
         type: {
             type: import("vue").PropType<"primary">;

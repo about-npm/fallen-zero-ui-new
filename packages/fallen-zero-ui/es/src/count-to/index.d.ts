@@ -1,4 +1,6 @@
-export declare const CountTo: import("../../utils/install").SFCWithInstall<import("vue").DefineComponent<{
+import type { Plugin } from 'vue';
+type SFCWithInstall<T> = T & Plugin;
+export declare const CountTo: SFCWithInstall<import("vue").DefineComponent<{
     startVal: {
         type: import("vue").PropType<number>;
         default: number;

@@ -2,8 +2,8 @@
  * @Author       : fallen_zero
  * @Date         : 2024-02-19 11:33:33
  * @LastEditors  : fallen_zero
- * @LastEditTime : 2024-02-19 11:54:27
- * @FilePath     : /fallen-zero-ui/packages/resolvers/src/index.ts
+ * @LastEditTime : 2024-02-21 09:34:34
+ * @FilePath     : /fallen-zero-ui/packages/resolvers/index.ts
  * @FileName     :
  */
 
@@ -44,7 +44,7 @@ export type ResolverOptions = {
   type: 'module' | 'commonjs';
 };
 
-export default (
+export const FzResolver = (
   options: ResolverOptions = { type: 'module' }
 ): ComponentResolver => {
   return {
@@ -62,3 +62,5 @@ export default (
     },
   };
 };
+
+export default FzResolver;

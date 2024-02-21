@@ -1,4 +1,6 @@
-export declare const Scroll: import("../../utils/install").SFCWithInstall<(<T>(__VLS_props: {
+import type { Plugin } from 'vue';
+type SFCWithInstall<T> = T & Plugin;
+export declare const Scroll: SFCWithInstall<(<T>(__VLS_props: {
     wheel?: boolean | undefined;
     "onUpdate:modelValue"?: ((args_0: boolean) => any) | undefined;
     list: T[];

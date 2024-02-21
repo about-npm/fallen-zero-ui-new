@@ -1,4 +1,6 @@
-export declare const Echarts: import("../../utils/install").SFCWithInstall<import("vue").DefineComponent<{
+import type { Plugin } from 'vue';
+type SFCWithInstall<T> = T & Plugin;
+export declare const Echarts: SFCWithInstall<import("vue").DefineComponent<{
     option: {
         type: import("vue").PropType<import("echarts/types/dist/echarts").EChartsOption | undefined>;
         required: true;

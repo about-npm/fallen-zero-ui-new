@@ -1,1 +1,1 @@
-"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const t=require("../../utils/install.js"),l=require("./index.vue.js"),e=t.withInstall(l.default);exports.Scroll=e;exports.default=e;
+"use strict";Object.defineProperties(exports,{__esModule:{value:!0},[Symbol.toStringTag]:{value:"Module"}});const s=require("./index.vue.js"),u=(e,o)=>{if(e.install=l=>{for(const t of[e,...Object.values(o??{})])l.component(t.name,t)},o)for(const[l,t]of Object.entries(o))e[l]=t;return e},c=u(s.default);exports.Scroll=c;exports.default=c;
