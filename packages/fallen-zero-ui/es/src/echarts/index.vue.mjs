@@ -1,10 +1,10 @@
 import { defineComponent as m, shallowRef as p, watch as d, nextTick as l, onBeforeUnmount as f, openBlock as h, createElementBlock as u, createElementVNode as _ } from "vue";
 import { debounce as i } from "../../utils/debounce.mjs";
-import "../../node_modules/.pnpm/echarts@5.5.0/node_modules/echarts/index.mjs";
+import "../../node_modules/.pnpm/echarts@5.5.1/node_modules/echarts/index.mjs";
 import "./style/index.css";
-import "../../node_modules/.pnpm/echarts-liquidfill@3.1.0_echarts@5.5.0/node_modules/echarts-liquidfill/src/liquidFillSeries.mjs";
-import "../../node_modules/.pnpm/echarts-liquidfill@3.1.0_echarts@5.5.0/node_modules/echarts-liquidfill/src/liquidFillView.mjs";
-import { init as v } from "../../node_modules/.pnpm/echarts@5.5.0/node_modules/echarts/lib/core/echarts.mjs";
+import "../../node_modules/.pnpm/echarts-liquidfill@3.1.0_echarts@5.5.1/node_modules/echarts-liquidfill/src/liquidFillSeries.mjs";
+import "../../node_modules/.pnpm/echarts-liquidfill@3.1.0_echarts@5.5.1/node_modules/echarts-liquidfill/src/liquidFillView.mjs";
+import { init as v } from "../../node_modules/.pnpm/echarts@5.5.1/node_modules/echarts/lib/core/echarts.mjs";
 const w = { class: "fz-echarts" }, y = /* @__PURE__ */ m({
   name: "fz-echarts",
   __name: "index",

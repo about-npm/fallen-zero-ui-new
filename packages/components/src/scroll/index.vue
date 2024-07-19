@@ -2,53 +2,43 @@
  * @Author       : fallen_zero
  * @Date         : 2024-02-19 11:09:12
  * @LastEditors  : fallen_zero
- * @LastEditTime : 2024-02-19 11:11:19
- * @FilePath     : /fallen-zero-ui/packages/components/src/scroll/index.vue
+ * @LastEditTime : 2024-07-19 17:12:34
+ * @FilePath     : /fallen-zero-ui-new/packages/components/src/scroll/index.vue
  * @FileName     : 
 -->
+
 <script setup lang="ts" generic="T">
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue';
-import { debounce } from '../../utils/debounce';
-import './style/index.scss';
+import { computed, nextTick, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
+import useResize from './hook/useResize';
+import { sum } from '../../utils/sum'
+import { debounce } from '../../utils/debounce'
 
 defineOptions({
   name: 'fz-scroll',
 });
 
-const props = withDefaults(
-  defineProps<{
-    list: T[];
-    /** 滚动一次需要多久完成滚动 */
-    step?: number;
-    /** 是否允许滚动 */
-    modelValue?: boolean;
-    /** 是否允许鼠标滚轮滚动 */
-    wheel?: boolean;
-    /** 是否鼠标悬停时暂停滚动 */
-    hover?: boolean;
-    /** 延迟滚动时间 */
-    delay?: number;
-    /** 滚动停顿时间 */
-    waitTime?: number;
-  }>(),
-  {
-    step: 800,
-    modelValue: true,
-    wheel: true,
-    hover: true,
-    delay: 0,
-    waitTime: 0,
-  }
-);
+const props = withDefaults(defineProps<{
+  /** 列表 */
+  list: T[];
+  /** 是否允许滚动 */
+  modelValue?: boolean;
+  /** 滚动停顿时间（毫秒） */
+  waitTime?: number;
+  /** 滚动一格的速度（毫秒） */
+  speed?: number;
+  /** 是否鼠标移入停止滚动 */
+  hover?: boolean;
+  /** 是否允许鼠标滚动 (在 hover 为 true 时生效) */
+  wheel?: boolean;
+}>(), {
+  waitTime: 0,
+  modelValue: true,
+  speed: 800,
+  hover: true,
+  wheel: true,
+});
 
-const emit = defineEmits<{
+const emits = defineEmits<{
   'update:modelValue': [boolean];
 }>();
 
@@ -57,276 +47,174 @@ const value = computed({
     return props.modelValue;
   },
   set(val) {
-    emit('update:modelValue', val);
+    emits('update:modelValue', val);
   },
 });
 
-const listNumber = ref(1);
+/** 根标签 */
+const rootRef = shallowRef<HTMLElement>();
+/** 容器标签 */
+const wrapperRef = shallowRef<HTMLDivElement>();
+/** 列表标签 */
+const listRef = shallowRef<HTMLUListElement[]>([]);
+/** 复制列表数量 */
+const listNum = ref<number>(1);
+/** 当前列表下标 */
+const currentIndex = ref<number>(0);
+/** 列表数据 */
+const dataList = computed(() => Array.from({ length: listNum.value }, () => props.list));
 
-const dataList = computed(() => {
-  return Array(listNumber.value)
-    .fill(1)
-    .map((el, index) => ({
-      id: index + el,
-      list: props.list,
-    }));
-});
+/** 获取列表每一项的高度 */
+function getListHeight(): number[] {
+  const list: number[] = [];
+  for (const iterator of Array.from(listRef.value?.[0].children ?? []))
+    list.push(iterator.clientHeight);
 
-let boxAnimation: Animation | undefined = void 0;
-
-const ob = new IntersectionObserver((entries) => {
-  entries.forEach((el) => {
-    const dataName = el.target.getAttribute('data-name');
-    if (dataName === 'box') {
-      listNumber.value = el.intersectionRatio < 1 ? 2 : 1;
-      nextTick(() => {
-        setTimeout(startScroll, props.delay);
-      });
-    }
-  });
-  const list = entries.filter((el) => el.target.getAttribute('data-index'));
-  const firstItem = list.find((el) => el.intersectionRatio === 1);
-  if (firstItem) {
-    scrollIndex.value = Number(firstItem.target.getAttribute('data-index'));
-  }
-  list.forEach((el) => {
-    ob.unobserve(el.target);
-  });
-});
-
-/** 盒子 */
-const boxRef = ref<HTMLDivElement | null>(null);
-/** 列表 */
-const listRefs = ref<HTMLDivElement[]>([]);
-/** 列表子项 */
-const itemRefs = ref<HTMLDivElement[]>([]);
-
-/** 滚动下标 */
-const scrollIndex = ref(0);
-
-/** 滚动高度数组 */
-const heightList = computed(() => {
-  return [
-    0,
-    ...itemRefs.value
-      .slice(1, Math.floor(itemRefs.value.length / listNumber.value) + 1)
-      .map((el) => el.offsetTop),
-  ];
-});
-
-/** 重新监听盒子 */
-const reWatchbox = debounce(() => {
-  listNumber.value = 1;
-  boxAnimation?.cancel();
-  boxAnimation = void 0;
-  nextTick(() => {
-    if (boxRef.value) {
-      ob.unobserve(boxRef.value);
-      ob.observe(boxRef.value);
-    }
-  });
-}, 200);
-
-const inWheel = ref(false);
-const inHover = ref(false);
-
-/** 不间断滚动 */
-const continuousRolling = () => {
-  if (listRefs.value.length > 1) {
-    if (inWheel.value) return;
-    if (boxAnimation) {
-      boxAnimation.play();
-      return;
-    }
-
-    if (scrollIndex.value) {
-      boxAnimation = boxRef.value?.animate(
-        [
-          {
-            transform: `translateY(${
-              -1 * heightList.value[scrollIndex.value]
-            }px)`,
-          },
-          {
-            transform: `translateY(-50%)`,
-          },
-        ],
-        {
-          duration: props.step * (props.list.length - scrollIndex.value),
-          easing: 'linear ',
-        }
-      );
-      const finish = () => {
-        scrollIndex.value = 0;
-        boxAnimation?.removeEventListener('finish', finish);
-        boxAnimation = void 0;
-        continuousRolling();
-      };
-      boxAnimation?.addEventListener('finish', finish);
-      return;
-    }
-
-    boxAnimation = boxRef.value?.animate(
-      [
-        {
-          transform: `translateY(0px)`,
-        },
-        {
-          transform: `translateY(-50%)`,
-        },
-      ],
-      {
-        duration: props.step * props.list.length,
-        iterations: Infinity,
-        easing: 'linear ',
-      }
-    );
-  }
-};
-
-/** 不间断滚动暂停 */
-const continuousRollingPause = () => {
-  if (boxAnimation) {
-    boxAnimation.pause();
-
-    if (!inHover.value) {
-      itemRefs.value.forEach((el) => {
-        ob.observe(el);
-      });
-      inHover.value = true;
-    }
-  }
-};
-
-/** 不间断滚动开始 */
-const continuousRollingPlay = () => {
-  inWheel.value = false;
-  inHover.value = false;
-  continuousRolling();
-};
-
-/** 间隔滚动定时器 */
-let intervalTimer: ReturnType<typeof setTimeout> | null = null;
+  return list.reduce<number[]>((prev, curr) => {
+    prev.push(sum([prev.at(-1) ?? 0, curr]));
+    return prev;
+  }, [0]);
+}
 
 /** 修改过渡动画时间 */
-const changeTransition = (time?: number | string) => {
-  if (!boxRef.value) return;
+function changeTransition(time?: number | string) {
+  if (!wrapperRef.value)
+    return;
   if (typeof time === 'number' || typeof time === 'undefined') {
-    boxRef.value.style.transition = `transform ${time ?? props.step}ms linear`;
+    wrapperRef.value.style.transition = `transform ${time ?? props.speed}ms linear`;
     return;
   }
-  boxRef.value.style.transition = time;
-};
+  wrapperRef.value.style.transition = time;
+}
+
+/** 定时器 */
+let timer: ReturnType<typeof setTimeout> | null = null;
+/** 滚动数组 */
+let nums: number[] = [];
+
+/** 清除定时器 */
+function clearTimer() {
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+  }
+}
+
+/** 间隔滚动事件 */
+function handleRolling() {
+  clearTimer();
+  if (currentIndex.value > nums.length - 2 && wrapperRef.value) {
+    changeTransition(0);
+    currentIndex.value = 0;
+    wrapperRef.value.style.transform = `translateY(0px)`;
+  }
+  timer = setTimeout(() => {
+    changeTransition();
+    if (!wrapperRef.value)
+      return;
+    currentIndex.value++;
+    wrapperRef.value.style.transform = `translateY(-${nums[currentIndex.value] || 0}px)`;
+  }, props.waitTime);
+}
 
 /** 间隔滚动 */
-const intervalScrolling = () => {
-  intervalTimer = setTimeout(() => {
-    if (scrollIndex.value >= heightList.value.length - 1) {
-      changeTransition(0);
-      scrollIndex.value = -1;
-      wheelScrollEvent(DIRECTION.DOWN, false);
-    }
-    setTimeout(() => {
-      changeTransition();
-      wheelScrollEvent(DIRECTION.DOWN, false);
-    }, 100);
-  }, props.waitTime);
-};
+function intervalRolling() {
+  if (!value.value || listNum.value === 1)
+    return;
+  nums = getListHeight();
+  handleRolling();
+  wrapperRef.value?.addEventListener('transitionend', handleRolling, true);
+}
 
-/** 间隔滚动暂停 */
-const intervalScrollingPause = () => {
-  if (intervalTimer) {
-    clearTimeout(intervalTimer);
-    intervalTimer = null;
-  }
-  if (!boxRef.value) return;
+/** 开始滚动 */
+function startScroll() {
+  intervalRolling();
+}
+
+/** 停止滚动 */
+function stopScroll() {
+  clearTimer();
   changeTransition(0);
-  boxRef.value.removeEventListener('transitionend', intervalScrolling, true);
-};
-
-/** 间隔滚动开始 */
-const intervalScrollingPlay = () => {
-  if (!boxRef.value) return;
-  changeTransition();
-  intervalScrolling();
-  boxRef.value.addEventListener('transitionend', intervalScrolling, true);
-};
+  if (wrapperRef.value)
+    wrapperRef.value.removeEventListener('transitionend', handleRolling, true);
+}
 
 enum DIRECTION {
   UP = -1,
   DOWN = 1,
 }
 
-/** 滚轮滚动事件
+/**
+ * 滚轮滚动事件
  * @param direction 方向
  */
-const wheelScrollEvent = (direction: DIRECTION, auto = true) => {
-  if (!boxRef.value) return;
-  scrollIndex.value += direction;
+function wheelScrollEvent(direction: DIRECTION) {
+  if (!wrapperRef.value)
+    return;
+  currentIndex.value += direction;
 
-  if (direction === DIRECTION.UP && scrollIndex.value < 0) {
-    scrollIndex.value = heightList.value.length - 2;
-  }
+  if (direction === DIRECTION.UP && currentIndex.value < 0)
+    currentIndex.value = nums.length - 2;
 
   if (
-    direction === DIRECTION.DOWN &&
-    scrollIndex.value > heightList.value.length - (auto ? 2 : 1)
-  ) {
-    scrollIndex.value = 0;
-  }
-  boxRef.value.style.transform = `translateY(${
-    -1 * heightList.value[scrollIndex.value]
+    direction === DIRECTION.DOWN
+    && currentIndex.value > nums.length - 2
+  )
+    currentIndex.value = 0;
+
+  wrapperRef.value.style.transform = `translateY(${
+    (-1 * nums[currentIndex.value]) || 0
   }px)`;
-};
+}
 
-/** 滚轮滚动 */
-const wheelScroll = (e: WheelEvent) => {
-  if (listNumber.value === 1) return;
-  inWheel.value = true;
-  boxAnimation?.cancel();
-  boxAnimation = void 0;
-  if (e.deltaY > 0) {
+/** 鼠标滚动事件 */
+function wheelScroll(e: WheelEvent) {
+  if (!props.hover || !props.wheel || listNum.value === 1)
+    return;
+  if (e.deltaY > 0)
     wheelScrollEvent(DIRECTION.DOWN);
-  } else {
+  else
     wheelScrollEvent(DIRECTION.UP);
-  }
-};
+}
 
-/** 开始滚动 */
-const startScroll = () => {
-  if (!value.value || listNumber.value === 1) return;
-  if (!props.waitTime) {
-    continuousRollingPlay();
+/** 初始化滚动 */
+function initScroll() {
+  currentIndex.value = 0;
+  stopScroll();
+  if (wrapperRef.value)
+    wrapperRef.value.style.transform = `translateY(0px)`;
+}
+
+/** 获取容器重合高度 */
+const getOverlapHeight = debounce(() => {
+  const root = rootRef.value;
+  const wrapper = wrapperRef.value;
+  if (!root || !wrapper)
     return;
-  }
-  intervalScrollingPlay();
-};
+  listNum.value = (listRef.value[0]?.clientHeight ?? 0) - root.clientHeight < 0 ? 1 : 2;
+  nextTick(() => {
+    if (value.value && listNum.value > 1)
+      startScroll();
+    if (listNum.value === 1)
+      initScroll();
+  });
+}, 200);
 
-/** 停止滚动 */
-const stopScroll = () => {
-  if (!props.waitTime) {
-    continuousRollingPause();
-    return;
-  }
-  intervalScrollingPause();
-};
+/** 处理尺寸变化事件 */
+function handleResize(entries: ResizeObserverEntry[]) {
+  entries.forEach(() => {
+    getOverlapHeight();
+  });
+}
 
-onMounted(() => {
-  reWatchbox();
-  window.addEventListener('resize', reWatchbox);
+/** 监听列表变化，重置列表数量 */
+watch(() => props.list, () => {
+  listNum.value = 1;
+  initScroll();
+  nextTick(() => {
+    getOverlapHeight();
+  });
 });
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', reWatchbox);
-  intervalScrollingPause();
-});
-
-watch(
-  () => props.list,
-  () => {
-    reWatchbox();
-  }
-);
 
 watch(value, (val) => {
   if (val) {
@@ -335,43 +223,31 @@ watch(value, (val) => {
   }
   stopScroll();
 });
+
+/** 监听尺寸变化 */
+useResize([rootRef], handleResize);
+
+onBeforeUnmount(() => {
+  stopScroll();
+});
 </script>
 
 <template>
-  <div class="fz-scroll">
-    <div class="fz-scroll-container">
-      <div
-        ref="boxRef"
-        class="fz-scroll-container-box"
-        data-name="box"
-        @wheel="wheel && hover && wheelScroll($event)"
-        @mouseover="hover && stopScroll()"
-        @mouseleave="hover && startScroll()"
-      >
-        <div
-          v-for="item in dataList"
-          :key="item.id"
-          ref="listRefs"
-          class="fz-scroll-container-box__list"
-        >
-          <div
-            v-for="(child, index) in item.list"
-            :key="index"
-            ref="itemRefs"
-            :data-index="index"
-            class="fz-scroll-container-box__list-item"
-          >
-            <slot
-              :index="index"
-              :data="child"
-            >
-              <div>{{ child }}</div>
-            </slot>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <main ref="rootRef" class="fz-scroll">
+    <section
+      ref="wrapperRef"
+      class="fz-scroll-list"
+      @wheel="wheel && hover && wheelScroll($event)"
+      @mouseover="hover && stopScroll()"
+      @mouseleave="hover && startScroll()"
+    >
+      <ul v-for="(item, index) in dataList" ref="listRef" :key="index" class="fz-scroll-list">
+        <li v-for="(info, i) in item" :key="i" class="fz-scroll-list">
+          <slot name="item" :data="info" :index="i"></slot>
+        </li>
+      </ul>
+    </section>
+  </main>
 </template>
 
 <style lang="scss" scoped></style>

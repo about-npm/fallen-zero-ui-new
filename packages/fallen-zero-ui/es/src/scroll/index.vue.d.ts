@@ -2,17 +2,16 @@ declare const _default: <T>(__VLS_props: {
     wheel?: boolean | undefined;
     "onUpdate:modelValue"?: ((args_0: boolean) => any) | undefined;
     list: T[];
-    step?: number | undefined;
     modelValue?: boolean | undefined;
-    hover?: boolean | undefined;
-    delay?: number | undefined;
     waitTime?: number | undefined;
+    speed?: number | undefined;
+    hover?: boolean | undefined;
 } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, __VLS_ctx?: {
     attrs: any;
     slots: {
-        default?(_: {
-            index: number;
+        item?(_: {
             data: T;
+            index: number;
         }): any;
     };
     emit: (evt: "update:modelValue", args_0: boolean) => void;
@@ -21,18 +20,17 @@ declare const _default: <T>(__VLS_props: {
         wheel?: boolean | undefined;
         "onUpdate:modelValue"?: ((args_0: boolean) => any) | undefined;
         list: T[];
-        step?: number | undefined;
         modelValue?: boolean | undefined;
-        hover?: boolean | undefined;
-        delay?: number | undefined;
         waitTime?: number | undefined;
+        speed?: number | undefined;
+        hover?: boolean | undefined;
     } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps;
     expose(exposed: import('vue').ShallowUnwrapRef<{}>): void;
     attrs: any;
     slots: {
-        default?(_: {
-            index: number;
+        item?(_: {
             data: T;
+            index: number;
         }): any;
     };
     emit: (evt: "update:modelValue", args_0: boolean) => void;
@@ -44,18 +42,17 @@ declare const _default: <T>(__VLS_props: {
             wheel?: boolean | undefined;
             "onUpdate:modelValue"?: ((args_0: boolean) => any) | undefined;
             list: T[];
-            step?: number | undefined;
             modelValue?: boolean | undefined;
-            hover?: boolean | undefined;
-            delay?: number | undefined;
             waitTime?: number | undefined;
+            speed?: number | undefined;
+            hover?: boolean | undefined;
         } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps;
         expose(exposed: import('vue').ShallowUnwrapRef<{}>): void;
         attrs: any;
         slots: {
-            default?(_: {
-                index: number;
+            item?(_: {
                 data: T;
+                index: number;
             }): any;
         };
         emit: (evt: "update:modelValue", args_0: boolean) => void;
