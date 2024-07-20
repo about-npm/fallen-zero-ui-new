@@ -2,8 +2,8 @@
  * @Author       : fallen_zero
  * @Date         : 2024-02-18 14:07:43
  * @LastEditors  : fallen_zero
- * @LastEditTime : 2024-02-19 14:43:39
- * @FilePath     : /fallen-zero-ui/packages/components/vite.config.ts
+ * @LastEditTime : 2024-07-20 09:34:35
+ * @FilePath     : /fallen-zero-ui-new/packages/components/vite.config.ts
  * @FileName     :
  */
 import { defineConfig } from 'vite';
@@ -66,10 +66,8 @@ export default defineConfig({
       generateBundle(_, bundle) {
         // 这里可以获取打包后的文件目录以及代码code
         const keys = Object.keys(bundle);
-
         for (const key of keys) {
           const bundler: any = bundle[key];
-
           // rollup 内置方法, 将所有输出文件code中的.scss换成.css, 因为我们当时没有打包scss文件
           this.emitFile({
             type: 'asset',

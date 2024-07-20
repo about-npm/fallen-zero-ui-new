@@ -4,22 +4,7 @@
   height: 100%;
   overflow: hidden;
 }
-.fz-scroll-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-.fz-scroll-container-box {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-.fz-scroll-container-box__list {
-  width: 100%;
-  overflow: hidden;
-}
-.fz-scroll-container-box__list-item {
-  position: relative;
+.fz-scroll-list {
   width: 100%;
   overflow: hidden;
 }

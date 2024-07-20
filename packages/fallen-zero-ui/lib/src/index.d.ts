@@ -1,4 +1,4 @@
 export * from './button';
-export * from './count-to';
+export * from './countTo';
 export * from './scroll';
 export * from './echarts';

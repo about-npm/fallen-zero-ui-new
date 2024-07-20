@@ -2,8 +2,8 @@
  * @Author       : fallen_zero
  * @Date         : 2024-02-19 11:33:33
  * @LastEditors  : fallen_zero
- * @LastEditTime : 2024-02-21 09:34:34
- * @FilePath     : /fallen-zero-ui/packages/resolvers/index.ts
+ * @LastEditTime : 2024-07-20 09:27:38
+ * @FilePath     : /fallen-zero-ui-new/packages/resolvers/index.ts
  * @FileName     :
  */
 
@@ -52,11 +52,11 @@ export const FzResolver = (
     resolve: (name: string) => {
       if (name.startsWith('Fz')) {
         const componentName = name.slice(2);
+        const dir = options.type === 'module' ? 'es' : 'lib';
         return {
           name: componentName,
-          from: `@fallen-zero/ui/${
-            options.type === 'module' ? 'es' : 'lib'
-          }/src`,
+          from: `@fallen-zero/ui/${dir}/src`,
+          sideEffects: `@fallen-zero/ui/${dir}/src/${componentName}/style/index.css`
         };
       }
     },

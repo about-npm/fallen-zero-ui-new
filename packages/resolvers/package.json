@@ -1,6 +1,6 @@
 {
   "name": "@fallen-zero/resolver",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Fallen Zero UI 组件解析器",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

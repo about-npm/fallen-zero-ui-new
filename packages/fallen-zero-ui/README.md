@@ -4,4 +4,5 @@
 
 ```powershell
 pnpm add @fallen-zero/ui
+pnpm add @fallen-zero/resolvers
 ```
