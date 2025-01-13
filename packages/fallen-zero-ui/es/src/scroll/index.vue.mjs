@@ -22,13 +22,18 @@ const X = /* @__PURE__ */ O({
       set(e) {
         b("update:modelValue", e);
       }
-    }), m = w(), t = w(), d = w([]), u = S(1), r = S(0), A = E(() => Array.from({ length: u.value }, () => o.list));
+    }), m = w(), t = w(), d = w([]), u = S(1), r = S(0), A = E(
+      () => Array.from({ length: u.value }, () => o.list)
+    );
     function M() {
       var n;
       const e = [];
       for (const l of Array.from(((n = d.value) == null ? void 0 : n[0].children) ?? []))
         e.push(l.clientHeight);
-      return e.reduce((l, g) => (l.push(D([l.at(-1) ?? 0, g])), l), [0]);
+      return e.reduce(
+        (l, g) => (l.push(D([l.at(-1) ?? 0, g])), l),
+        [0]
+      );
     }
     function p(e) {
       if (t.value) {
@@ -76,7 +81,7 @@ const X = /* @__PURE__ */ O({
     const T = G(() => {
       var l;
       const e = m.value, n = t.value;
-      !e || !n || (u.value = (((l = d.value[0]) == null ? void 0 : l.clientHeight) ?? 0) - e.clientHeight < 0 ? 1 : 2, x(() => {
+      !e || !n || (u.value = (((l = d.value[0]) == null ? void 0 : l.clientHeight) ?? 0) - e.clientHeight <= 0 ? 1 : 2, x(() => {
         c.value && u.value > 1 && y(), u.value === 1 && z();
       }));
     }, 200);
@@ -85,11 +90,14 @@ const X = /* @__PURE__ */ O({
         T();
       });
     }
-    return $(() => o.list, () => {
-      u.value = 1, z(), x(() => {
-        T();
-      });
-    }), $(c, (e) => {
+    return $(
+      () => o.list,
+      () => {
+        u.value = 1, z(), x(() => {
+          T();
+        });
+      }
+    ), $(c, (e) => {
       if (e) {
         y();
         return;
