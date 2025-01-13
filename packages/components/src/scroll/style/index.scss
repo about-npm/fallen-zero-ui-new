@@ -5,6 +5,9 @@
   overflow: hidden;
 
   &-list {
+    display: grid;
+    grid-auto-flow: row;
+    gap: var(--fz-scroll-gap, 0);
     width: 100%;
     overflow: hidden;
   }
